@@ -1,5 +1,8 @@
-API_Key = "d1kdQx7sNvHhpJkLQhlrl6KG6"
-API_Key_Secret = "GeUCia8jfRhxUOqh4CrrchVmq7EzXeKRHZsZEX4CpaxgNeyugH"
-Access_Token= "1839371005137203200-nCIHzGIc42KimttDrxy3fNPDDap5rH"
-Access_Token_Secret = "0WEy61yMq3XcjcQ0yt35jzG1B1V6naP08dXg51KXk3F2v"
-#print("hola")
+API_Key = "3tQoPanXgM3CddV7URsGcgBmO"
+API_Key_Secret = "hH9D3WCfQ6rEIXudYkAyN28iEwJ8qatvmcc1zWQen61WiboSId"
+Access_Token= "1839371005137203200-laTTRQMdeGS8CgaRdoIe7RJhwoAx40"
+Access_Token_Secret = "vTfe0x925mdkcHf9y3gkxMpPSEZwibugEw92yAcvgjNvS"
+Bearer_Token= "AAAAAAAAAAAAAAAAAAAAANtbwAEAAAAAtETZvBSO6ZxuYDvf2tQ42huaoFo%3DBjJ8cDDgf1stUQWjGgCM1lcWPIQr6HbxFPjUnaWgq3RiJ3AowI"
+
+client_ID= "QldxRWtkcllNZm8zUmtuXzFxTXc6MTpjaQ"
+client_secret= "y96jJQBdEHnuPEIC6Ep_z2vX8eN8H8sXNXF7Xkv1R-EAjDsc3L"

@@ -1,11 +1,11 @@
 import tweepy
-import account
+import account as a
 
-client= tweepy.OAuthHandler(account.API_Key, account.API_Key_Secret)
-client.set_access_token(account.Access_Token, account.Access_Token_Secret)
-api = tweepy.API(client)
+print("Extractor de tweets")
+cliente= tweepy.Client(a.Bearer_Token, a.API_Key, a.API_Key_Secret, a.Access_Token, a.Access_Token_Secret)
 
-tweet= "hola este es mi primer tweet con Tweepy"
-response= api.update_status(status=tweet)
+auth= tweepy.OAuth1UserHandler(a.API_Key, a.API_Key_Secret, a.Access_Token, a.Access_Token_Secret)
+api = tweepy.API(auth)
 
-print("Tweet posteado bien",response)
+cliente.create_tweet(text="Hello Twitter!")
+
