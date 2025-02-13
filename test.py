@@ -8,7 +8,7 @@ from datetime import datetime
 # https://github.com/mehranshakarami/AI_Spectrum/blob/main/2024/Twikit/main.py#L52
 
 MINIMUM_TWEETS = 5000
-QUERY = '(from:SATMX (IVA OR ISR) until:2024-10-31 since:2023-01-01'
+QUERY = '(from:SATMX (DIOT OR IEPS) until:2024-10-31 since:2023-01-01'
 
 # Initialize client
 client = Client('en-US')
