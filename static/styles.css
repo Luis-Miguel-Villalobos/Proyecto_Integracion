@@ -87,3 +87,216 @@
       transform: rotateX(-30deg) rotateY(360deg) rotateZ(360deg);
     }
   }
+
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.chat-container {
+    width: 600px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-box {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    border-bottom: 1px solid #ddd;
+}
+
+.user-message, .bot-message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.user-message {
+    background-color: #007bff;
+    color: #fff;
+    align-self: flex-end;
+}
+
+.bot-message {
+    background-color: #f1f1f1;
+    color: #333;
+    align-self: flex-start;
+}
+
+.input-container {
+    display: flex;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+#user-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+#send-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#send-btn:hover {
+    background-color: #0056b3;
+}
+
+
+/* Estilos generales */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f8fa;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow-y: auto; /* Permite el scroll vertical */
+}
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto; /* Centra el contenedor */
+  padding: 20px;
+}
+
+/* Encabezado pegajoso */
+.sticky-header {
+  position: sticky;
+  top:0;
+  background-color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.form-container {
+  margin-top: 60px; /* Ajusta este valor según la altura del encabezado */
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-height: 80vh; /* Limita la altura si es necesario */
+  overflow-x: hidden; /* Oculta el scroll horizontal si no es necesario */
+  overflow-y: auto; /* Permite el scroll interno si el contenido es muy largo */
+  z-index: 1; /* Asegura que esté por debajo del header */
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #14171a;
+  margin: 0;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  color: #657786;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #e1e8ed;
+  border-radius: 8px;
+  background-color: #f5f8fa;
+  color: #14171a;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #1da1f2;
+  box-shadow: 0 0 0 2px rgba(29, 161, 242, 0.2);
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #1da1f2;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #1991db;
+}
+
+/* Estilos para el checkbox y el cuadro de texto avanzado */
+.form-group label[for="advanced-query-checkbox"] {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #657786;
+  margin-bottom: 10px;
+}
+
+.form-group label[for="advanced-query-checkbox"] input {
+  margin-right: 10px;
+}
+
+#advanced-query {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #e1e8ed;
+  border-radius: 8px;
+  background-color: #f5f8fa;
+  color: #14171a;
+  outline: none;
+  margin-top: 5px;
+}
+
+#advanced-query:disabled {
+  background-color: #e1e8ed;
+  cursor: not-allowed;
+}
+
+/* Botón de búsqueda */
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
