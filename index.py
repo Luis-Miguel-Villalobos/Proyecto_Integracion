@@ -7,8 +7,8 @@ from datetime import datetime
 #repo base:
 # https://github.com/mehranshakarami/AI_Spectrum/blob/main/2024/Twikit/main.py#L52
 
-MINIMUM_TWEETS = 300
-QUERY = '(from:SATMX (IVA OR ISR) until:2024-10-01 since:2023-01-01'
+MINIMUM_TWEETS = 5000
+QUERY = '(from:SATMX (DIOT OR IEPS) until:2024-10-31 since:2023-01-01'
 
 # Initialize client
 client = Client('en-US')
@@ -25,7 +25,7 @@ async def recolectar_tweets(tweets):
     if tweets is None:
         #recolectar tweets
         print(f'{datetime.now()} - Recolectando tweets...')
-        tweets = await client.search_tweet(QUERY, 'TOP')
+        tweets = await client.search_tweet(QUERY, 'LATEST')
     else:
         wait_time= randint(5, 10)
         print(f'{datetime.now()} - Proxima recoleccion en {wait_time} segundos...')
@@ -60,24 +60,19 @@ async def main():
             break
 
         # Abre el archivo CSV en modo escritura
-        with open('tweets.csv', mode='a', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file, delimiter='||')
+        with open('tweets2.csv', mode='a', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file, delimiter='|')
 
             # Escribe la cabecera del CSV solo si el archivo esta vacio+
             if file.tell() == 0:
-                writer.writerow(['user_name', 'tweet_text', 'created_at'])
+                #writer.writerow(['user_name', 'tweet_text', 'created_at'])
+                writer.writerow(['user_name', 'id_tweet', 'tweet_text', 'created_at'])
 
             count= 0
             for tweet in tweets:
                 count += 1
-                # Convierte el tweet a formato JSON
-                tweet_json = json.dumps({
-                    'user_name': tweet.user.name,
-                    'tweet_text': tweet.text,
-                    'created_at': tweet.created_at
-                })
                 # Escribe el tweet en el archivo CSV
-                writer.writerow([tweet.user.name, tweet.text, tweet.created_at])
+                writer.writerow([tweet.user.name, tweet.id, tweet.text, tweet.created_at])
             
             print(f'{datetime.now()} - {count} tweets recolectados')
     
