@@ -13,9 +13,6 @@ class DataCleaner:
     def eliminar_menciones(self, tweet):
         """
         Elimina las menciones (palabras que comienzan con '@') de un tweet.
-
-        :param tweet: Cadena de texto que representa el tweet.
-        :return: El tweet sin menciones.
         """
         # Usamos una expresión regular para encontrar y eliminar las menciones
         tweet_limpio = re.sub(r'@\w+', '', tweet)
@@ -26,9 +23,6 @@ class DataCleaner:
     def eliminar_ligas(self, tweet):
         """
         Elimina las URLs (ligas) de un tweet.
-
-        :param tweet: Cadena de texto que representa el tweet.
-        :return: El tweet sin URLs.
         """
         # Usamos una expresión regular para encontrar y eliminar las URLs
         tweet_limpio = re.sub(r'http\S+|www\.\S+', '', tweet)
@@ -39,9 +33,6 @@ class DataCleaner:
     def eliminar_stopwords(self, tweet):
         """
         Elimina las stopwords (palabras vacías) de un tweet.
-
-        :param tweet: Cadena de texto que representa el tweet.
-        :return: El tweet sin stopwords.
         """
         # Tokenizar el tweet en palabras individuales
         palabras = word_tokenize(tweet, language='spanish')
@@ -54,9 +45,6 @@ class DataCleaner:
     def eliminar_signos_puntuacion(self, tweet):
         """
         Elimina los signos de puntuación de un tweet.
-
-        :param tweet: Cadena de texto que representa el tweet.
-        :return: El tweet sin signos de puntuación.
         """
         # Usamos una expresión regular para eliminar los signos de puntuación
         tweet_limpio = re.sub(f'[{re.escape(string.punctuation)}]', '', tweet)
@@ -65,9 +53,6 @@ class DataCleaner:
     def eliminar_caracteres_especiales(self, tweet):
         """
         Elimina caracteres especiales (que no son letras, números ni espacios) de un tweet.
-
-        :param tweet: Cadena de texto que representa el tweet.
-        :return: El tweet sin caracteres especiales.
         """
         # Usamos una expresión regular para eliminar caracteres que no sean letras, números o espacios
         tweet_limpio = re.sub(r'[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]', '', tweet)
