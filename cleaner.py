@@ -7,8 +7,10 @@ class DataCleaner:
         # Descargar las stopwords en español (solo es necesario hacerlo una vez)
         import nltk
         nltk.download('stopwords')
-        nltk.download('punkt')
+        nltk.download('punkt_tab')
         self.stopwords_es = set(stopwords.words('spanish'))
+        # Mostrar las stopwords en español
+        #print(self.stopwords_es)
         
     def eliminar_menciones(self, tweet):
         """
@@ -55,5 +57,16 @@ class DataCleaner:
         Elimina caracteres especiales (que no son letras, números ni espacios) de un tweet.
         """
         # Usamos una expresión regular para eliminar caracteres que no sean letras, números o espacios
-        tweet_limpio = re.sub(r'[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]', '', tweet)
+        tweet_limpio = re.sub(r'[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s$%]', '', tweet)
+        return tweet_limpio
+    
+    def limpiar_tweet(self, tweet):
+        """
+        Aplica todas las funciones de limpieza a un tweet.
+        """
+        tweet_limpio = self.eliminar_menciones(tweet)
+        tweet_limpio = self.eliminar_ligas(tweet_limpio)
+        tweet_limpio = self.eliminar_stopwords(tweet_limpio)
+        tweet_limpio = self.eliminar_signos_puntuacion(tweet_limpio)
+        tweet_limpio = self.eliminar_caracteres_especiales(tweet_limpio)
         return tweet_limpio

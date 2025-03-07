@@ -1,5 +1,6 @@
 import pandas as pd
 from difflib import get_close_matches
+from cleaner import DataCleaner
 
 class Chatbot:
     def __init__(self):
@@ -9,9 +10,16 @@ class Chatbot:
         # Verificar que la columna 'tweet_text' existe
         if 'tweet_text' not in self.df.columns:
             raise ValueError("El archivo CSV debe contener una columna llamada 'tweet_text'.")
-        
-        # Convertir las respuestas a una lista
-        self.respuestas = self.df['tweet_text'].tolist()
+ 
+        # Inicializar el DataCleaner
+        self.data_cleaner = DataCleaner()
+               
+       # Crear una lista de tuplas (tweet_original, tweet_limpio)
+        self.tweets = [
+            (tweet, self.data_cleaner.limpiar_tweet(tweet))  # (original, limpio)
+            for tweet in self.df['tweet_text']
+        ]
+
 
     def obtener_respuesta_similar(self, entrada_usuario):
         """
@@ -23,14 +31,27 @@ class Chatbot:
         Retorna:
         - La respuesta más similar o un mensaje predeterminado si no se encuentra.
         """
+
+        # Limpiar el tweet del usuario
+        tweet_limpio_usuario = self.data_cleaner.limpiar_tweet(entrada_usuario)
+        print(tweet_limpio_usuario)
+
         # Buscar la respuesta más similar usando difflib
         # - n=1: devuelve solo la mejor coincidencia
         # - cutoff=0.1: umbral de similitud (ajústalo según sea necesario)
-        coincidencias = get_close_matches(entrada_usuario, self.respuestas, n=1, cutoff=0.1)
+
+         # Extraer solo los tweets limpios para la comparación
+        tweets_limpios = [tweet_limpio for _, tweet_limpio in self.tweets]
+
+        # Buscar la respuesta más similar usando difflib (en los tweets limpios)
+        coincidencias = get_close_matches(tweet_limpio_usuario, tweets_limpios, n=1, cutoff=0.3)
+        print(coincidencias)
         
         # Si se encontró una coincidencia, devolverla
         if coincidencias:
-            return coincidencias[0]
+            indice = tweets_limpios.index(coincidencias[0])
+            respuesta_original = self.tweets[indice][0]  # Tweet original
+            return respuesta_original
         else:
             # Si no se encuentra una respuesta similar, devolver un mensaje predeterminado
             return "Lo siento, no tengo una respuesta para eso."
