@@ -1,6 +1,7 @@
 import re, string
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+import spacy
 
 class DataCleaner:
     def __init__(self):
@@ -9,8 +10,9 @@ class DataCleaner:
         nltk.download('stopwords')
         nltk.download('punkt_tab')
         self.stopwords_es = set(stopwords.words('spanish'))
-        # Mostrar las stopwords en español
-        #print(self.stopwords_es)
+
+        # Cargar el modelo de spaCy para español
+        self.nlp = spacy.load('es_core_news_sm')  # Modelo pequeño para español
         
     def eliminar_menciones(self, tweet):
         """
@@ -57,8 +59,19 @@ class DataCleaner:
         Elimina caracteres especiales (que no son letras, números ni espacios) de un tweet.
         """
         # Usamos una expresión regular para eliminar caracteres que no sean letras, números o espacios
-        tweet_limpio = re.sub(r'[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s$%]', '', tweet)
+        tweet_limpio = re.sub(r'[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s$%]|[\n\t\r]', '', tweet)
         return tweet_limpio
+    
+    def lematizar_texto(self, texto):
+        """
+        Lematiza un texto en español usando spaCy.
+
+        :param texto: Cadena de texto a lematizar.
+        :return: Texto lematizado.
+        """
+        doc = self.nlp(texto)  # Procesar el texto con spaCy
+        palabras_lemmatizadas = [token.lemma_ for token in doc]  # Obtener lemas
+        return ' '.join(palabras_lemmatizadas) if palabras_lemmatizadas else ''
     
     def limpiar_tweet(self, tweet):
         """
@@ -69,4 +82,6 @@ class DataCleaner:
         tweet_limpio = self.eliminar_stopwords(tweet_limpio)
         tweet_limpio = self.eliminar_signos_puntuacion(tweet_limpio)
         tweet_limpio = self.eliminar_caracteres_especiales(tweet_limpio)
+        tweet_limpio = self.lematizar_texto(tweet_limpio)
+
         return tweet_limpio
