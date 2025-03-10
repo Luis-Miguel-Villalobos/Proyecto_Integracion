@@ -1,6 +1,7 @@
 import re, string
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from nltk.stem import SnowballStemmer  # Stemmer para español
 
 class DataCleaner:
     def __init__(self):
@@ -9,8 +10,9 @@ class DataCleaner:
         nltk.download('stopwords')
         nltk.download('punkt_tab')
         self.stopwords_es = set(stopwords.words('spanish'))
-        # Mostrar las stopwords en español
-        #print(self.stopwords_es)
+
+        # Inicializar el stemmer para español
+        self.stemmer = SnowballStemmer('spanish')
         
     def eliminar_menciones(self, tweet):
         """
@@ -57,8 +59,19 @@ class DataCleaner:
         Elimina caracteres especiales (que no son letras, números ni espacios) de un tweet.
         """
         # Usamos una expresión regular para eliminar caracteres que no sean letras, números o espacios
-        tweet_limpio = re.sub(r'[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s$%]', '', tweet)
+        tweet_limpio = re.sub(r'[^a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s$%]|[\n\t\r]', '', tweet)
         return tweet_limpio
+    
+    def derivar_texto(self, texto):
+        """
+        Aplica stemming a un texto en español.
+
+        :param texto: Cadena de texto a derivar.
+        :return: Texto derivado (stemmed).
+        """
+        palabras = word_tokenize(texto, language='spanish')
+        palabras_stemmed = [self.stemmer.stem(palabra) for palabra in palabras]
+        return ' '.join(palabras_stemmed) if palabras_stemmed else ''
     
     def limpiar_tweet(self, tweet):
         """
@@ -69,4 +82,6 @@ class DataCleaner:
         tweet_limpio = self.eliminar_stopwords(tweet_limpio)
         tweet_limpio = self.eliminar_signos_puntuacion(tweet_limpio)
         tweet_limpio = self.eliminar_caracteres_especiales(tweet_limpio)
+        tweet_limpio = self.derivar_texto(tweet_limpio)
+
         return tweet_limpio
