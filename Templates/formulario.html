@@ -11,14 +11,14 @@
         <!-- Título y botón pegajosos -->
         <div class="sticky-header">
             <h2 class="form-title">Búsqueda Avanzada</h2>
-            <button type="submit" class="btn">Buscar</button>
+            <button type="button" id="search-button" class="btn">Buscar</button>
         </div>
         
         <!-- Contenedor del formulario -->
         <div class="form-container">
 
             <!-- Campos del formulario -->
-            <form action="/search" method="GET">
+            <form id="search-form">
                 <!-- Nuevo campo: Búsqueda avanzada por query -->
                 <div class="form-group">
                     <label for="advanced-query-checkbox">
@@ -54,7 +54,7 @@
                 </div>
                 <div class="form-group">
                     <label for="hashtag">Hashtag</label>
-                    <input type="text" id="hashtag" name="hashtag" placeholder="Ingrese hashtag">
+                    <input type="text" id="hashtag" name="hashtag" placeholder="Ejemplo: #Python">
                 </div>
                 <div class="form-group">
                     <label for="guardar">Guardar en:</label>
@@ -66,6 +66,11 @@
                     <label for="txt">TXT</label>
                 </div>
             </form>
+        </div>
+
+        <!-- Mensaje de resultado -->
+        <div id="result-message" style="margin-top: 20px;">
+            <p id="result-text"></p>
         </div>
     </div>
 
@@ -84,6 +89,31 @@
                 input.disabled = isChecked;
             });
         });
+
+        // Lógica para enviar el formulario mediante AJAX y recibir actualizaciones en tiempo real
+        document.getElementById('search-button').addEventListener('click', function() {
+            const form = document.getElementById('search-form');
+            const formData = new FormData(form);
+
+            // Convertir FormData a un objeto JSON
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // Crear una conexión SSE (Server-Sent Events)
+            const eventSource = new EventSource(`/search?query=${data.query}&from=${data.from}&to=${data.to}&language=${data.language}&user=${data.user}&hashtag=${data.hashtag}&advanced-query=${data['advanced-query']}&formato=${data.formato}`);
+
+            eventSource.onmessage = function(event) {
+                const resultText = document.getElementById('result-text');
+                resultText.textContent = event.data;
+            };
+
+            eventSource.onerror = function() {
+                eventSource.close();
+            };
+        });
+
     </script>
 </body>
 </html>
