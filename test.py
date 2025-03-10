@@ -8,16 +8,12 @@ from datetime import datetime
 # https://github.com/mehranshakarami/AI_Spectrum/blob/main/2024/Twikit/main.py#L52
 
 # Constante
-MINIMUM_TWEETS = 5000
+MINIMUM_TWEETS = 5000000
 
 class TwitterAccount:
     def __init__(self, username, email, password):
         """
         Inicializa una cuenta de Twitter.
-        
-        :param username: Nombre de usuario de la cuenta.
-        :param email: Correo electrónico de la cuenta.
-        :param password: Contraseña de la cuenta.
         """
         self.username = username
         self.email = email
@@ -101,7 +97,7 @@ class TweetCollector:
                 'user_name': tweet.user.name,
                 'id_tweet': tweet.id,
                 'tweet_text': tweet.text,
-                'created_at': tweet.created_at.isoformat()
+                'created_at': tweet.created_at
             })
 
         with open('tweets.json', mode='a', encoding='utf-8') as file:
@@ -128,6 +124,7 @@ class TweetCollector:
         try:
             await self.login()
         except Exception as e:
+            yield f"No pude iniciar sesión. Error: {e}"
             print(f"{datetime.now()} - No pude iniciar sesión. Error: {e}")
             return
 
@@ -136,25 +133,29 @@ class TweetCollector:
                 tweets = await self.collect_tweets()
                 self.tweet_count += len(tweets)
                 await self.save_tweets(tweets)
+                yield f'{self.tweet_count} tweets recolectados'
             except TooManyRequests as e:
                 rate_limit_reset = datetime.fromtimestamp(e.rate_limit_reset)
+                yield f'Se alcanzó el límite de peticiones. Esperando hasta {rate_limit_reset}'
                 print(f'{datetime.now()} - Se alcanzó el límite de peticiones. Esperando hasta {rate_limit_reset}')
                 wait_time = (rate_limit_reset - datetime.now()).total_seconds()
                 time.sleep(wait_time)
                 continue
             except Exception as e:
+                yield f'{datetime.now()} - Error: {e}'
                 print(f'{datetime.now()} - Error: {e}')
                 break
 
             if not tweets:
+                yield f'No hay más tweets'
                 print(f'{datetime.now()} - No hay más tweets')
                 break
 
+        yield f'{self.tweet_count} tweets recolectados con éxito'
         print(f'{datetime.now()} - {self.tweet_count} tweets recolectados con éxito')
 
 
-# Aquí corro el recolector
-if __name__ == "__main__":
+async def main():
     # Inicializa el cliente (asegúrate de importar y configurar el cliente correctamente)
     client = Client('en-US')
 
@@ -176,6 +177,10 @@ if __name__ == "__main__":
 
     # Ejecuta el recolector
     try:
-        asyncio.run(collector.run())
+        async for message in collector.run():
+            print(message)
     except Exception as e:
         print(f"{datetime.now()} - No arrancó el recolector. Error: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
