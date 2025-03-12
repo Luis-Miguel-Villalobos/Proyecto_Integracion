@@ -1,5 +1,6 @@
 import pandas as pd
-from difflib import get_close_matches
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 from cleaner import DataCleaner
 
 class Chatbot:
@@ -20,50 +21,45 @@ class Chatbot:
             for tweet in self.df['tweet_text']
         ]
 
+        # Extraer solo los tweets limpios para la comparación
+        self.tweets_limpios = [tweet_limpio for _, tweet_limpio in self.tweets]
+
+        # Inicializar y entrenar el vectorizador TF-IDF
+        self.vectorizer = TfidfVectorizer()
+        self.matriz_vectores = self.vectorizer.fit_transform(self.tweets_limpios)
+
 
     def obtener_respuesta_similar(self, entrada_usuario):
         """
-        Busca la respuesta más similar en la lista de respuestas.
-        
-        Parámetros:
-        - entrada_usuario: texto que el usuario escribió.
-        
-        Retorna:
-        - La respuesta más similar o un mensaje predeterminado si no se encuentra.
+         Busca la respuesta más similar en la lista de respuestas usando TF-IDF y similitud de coseno.
         """
 
         # Limpiar el tweet del usuario
         tweet_limpio_usuario = self.data_cleaner.limpiar_tweet(entrada_usuario)
         print(tweet_limpio_usuario)
 
-        # Buscar la respuesta más similar usando difflib
-        # - n=1: devuelve solo la mejor coincidencia
-        # - cutoff=0.1: umbral de similitud (ajústalo según sea necesario)
+        # Convertir la pregunta del usuario en un vector TF-IDF
+        vector_usuario = self.vectorizer.transform([tweet_limpio_usuario])
 
-         # Extraer solo los tweets limpios para la comparación
-        tweets_limpios = [tweet_limpio for _, tweet_limpio in self.tweets]
+        # Calcular la similitud con todos los tweets
+        similitudes = cosine_similarity(vector_usuario, self.matriz_vectores)
 
-        # Buscar la respuesta más similar usando difflib (en los tweets limpios)
-        coincidencias = get_close_matches(tweet_limpio_usuario, tweets_limpios, n=1, cutoff=0.3)
-        print(coincidencias)
-        
-        # Si se encontró una coincidencia, devolverla
-        if coincidencias:
-            indice = tweets_limpios.index(coincidencias[0])
-            respuesta_original = self.tweets[indice][0]  # Tweet original
+        # Obtener el índice de la mejor coincidencia
+        indice_mas_similar = similitudes.argmax()
+        puntaje_similitud = similitudes[0, indice_mas_similar]
+
+        # Definir un umbral de similitud mínima (ajústalo según necesidad)
+        UMBRAL_SIMILITUD = 0.5  # Ajusta este valor según los resultados
+
+        if puntaje_similitud >= UMBRAL_SIMILITUD:
+            respuesta_original = self.tweets[indice_mas_similar][0]  # Tweet original
+            print(self.tweets[indice_mas_similar][1])
             return respuesta_original
         else:
-            # Si no se encuentra una respuesta similar, devolver un mensaje predeterminado
             return "Lo siento, no tengo una respuesta para eso."
 
     def get_response(self, message):
         """
         Método para obtener la respuesta del chatbot.
-        
-        Parámetros:
-        - message: mensaje del usuario.
-        
-        Retorna:
-        - La respuesta del chatbot.
         """
         return self.obtener_respuesta_similar(message)
