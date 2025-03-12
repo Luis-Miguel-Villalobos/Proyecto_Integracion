@@ -25,7 +25,11 @@ class Chatbot:
         self.tweets_limpios = [tweet_limpio for _, tweet_limpio in self.tweets]
 
         # Inicializar y entrenar el vectorizador TF-IDF
-        self.vectorizer = TfidfVectorizer()
+        self.vectorizer = TfidfVectorizer(
+            tokenizer=None,  # No usar tokenizador interno
+            preprocessor=None,  # No hacer limpieza automática
+            analyzer="word"  # Usar las palabras tal como están tras limpiar
+        )
         self.matriz_vectores = self.vectorizer.fit_transform(self.tweets_limpios)
 
 
