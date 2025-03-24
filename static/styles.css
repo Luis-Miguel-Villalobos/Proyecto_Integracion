@@ -300,3 +300,18 @@ body {
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
+/* Estilos para el botón de "Parar" */
+.btn-stop {
+  background-color: #ff4d4d; /* Color rojo */
+  margin-left: 10px; /* Espacio entre los botones */
+}
+
+.btn-stop:hover {
+  background-color: #cc0000; /* Color rojo más oscuro al pasar el mouse */
+}
+
+.btn-stop:disabled {
+  background-color: #ff9999; /* Color rojo claro cuando está deshabilitado */
+  cursor: not-allowed;
+}
