@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda Avanzada</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Título y botón pegajosos -->
+        <div class="sticky-header">
+            <h2 class="form-title">Búsqueda Avanzada</h2>
+            <button type="button" id="search-button" class="btn">Buscar</button>
+        </div>
+        
+        <!-- Contenedor del formulario -->
+        <div class="form-container">
+
+            <!-- Campos del formulario -->
+            <form id="search-form">
+                <!-- Nuevo campo: Búsqueda avanzada por query -->
+                <div class="form-group">
+                    <label for="advanced-query-checkbox">
+                        <input type="checkbox" id="advanced-query-checkbox"> Búsqueda avanzada por query
+                    </label>
+                    <input type="text" id="advanced-query" name="advanced-query" placeholder="Ingrese query avanzada" disabled>
+                </div>
+
+                <!-- Campos existentes -->
+                <div class="form-group">
+                    <label for="query">Palabras clave</label>
+                    <input type="text" id="query" name="query" placeholder="Ingrese palabras clave">
+                </div>
+                <div class="form-group">
+                    <label for="from">Desde</label>
+                    <input type="date" id="from" name="from">
+                </div>
+                <div class="form-group">
+                    <label for="to">Hasta</label>
+                    <input type="date" id="to" name="to">
+                </div>
+                <div class="form-group">
+                    <label for="language">Idioma</label>
+                    <select id="language" name="language">
+                        <option value="es">Español</option>
+                        <option value="en">Inglés</option>
+                        <option value="fr">Francés</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="user">De usuario</label>
+                    <input type="text" id="user" name="user" placeholder="Ingrese el nombre de usuario">
+                </div>
+                <div class="form-group">
+                    <label for="hashtag">Hashtag</label>
+                    <input type="text" id="hashtag" name="hashtag" placeholder="Ejemplo: #Python">
+                </div>
+                <div class="form-group">
+                    <label for="guardar">Guardar en:</label>
+                    <input type="radio" id="csv" name="formato" value="CSV">
+                    <label for="csv">CSV</label>
+                    <input type="radio" id="json" name="formato" value="JSON">
+                    <label for="json">JSON</label>
+                    <input type="radio" id="txt" name="formato" value="TXT">
+                    <label for="txt">TXT</label>
+                </div>
+            </form>
+        </div>
+
+        <!-- Mensaje de resultado -->
+        <div id="result-message" style="margin-top: 20px;">
+            <p id="result-text"></p>
+        </div>
+    </div>
+
+    <!-- JavaScript para manejar la lógica del checkbox -->
+    <script>
+        document.getElementById('advanced-query-checkbox').addEventListener('change', function() {
+            const isChecked = this.checked;
+            const advancedQueryInput = document.getElementById('advanced-query');
+            const otherInputs = document.querySelectorAll('.form-group input:not(#advanced-query):not(#advanced-query-checkbox), .form-group select');
+
+            // Habilitar/deshabilitar el campo de query avanzada
+            advancedQueryInput.disabled = !isChecked;
+
+            // Habilitar/deshabilitar los demás campos
+            otherInputs.forEach(input => {
+                input.disabled = isChecked;
+            });
+        });
+
+        // Lógica para enviar el formulario mediante AJAX y recibir actualizaciones en tiempo real
+        document.getElementById('search-button').addEventListener('click', function() {
+            const form = document.getElementById('search-form');
+            const formData = new FormData(form);
+
+            // Convertir FormData a un objeto JSON
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // Crear una conexión SSE (Server-Sent Events)
+            const eventSource = new EventSource(`/search?query=${data.query}&from=${data.from}&to=${data.to}&language=${data.language}&user=${data.user}&hashtag=${data.hashtag}&advanced-query=${data['advanced-query']}&formato=${data.formato}`);
+
+            eventSource.onmessage = function(event) {
+                const resultText = document.getElementById('result-text');
+                resultText.textContent = event.data;
+            };
+
+            eventSource.onerror = function() {
+                eventSource.close();
+            };
+        });
+
+    </script>
+</body>
+</html>
